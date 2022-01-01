@@ -1,0 +1,131 @@
+from IPython.display import clear_output
+def check_winner(rows,chance_limit):
+    if chance_limit<=10:
+        if rows[1][1]==rows[2][2]=='X' and rows[2][2]==rows[0][0]=='X':
+            return 'X'
+        elif rows[1][1]==rows[2][2]=='O' and rows[2][2]==rows[0][0]=='O':
+            return 'O'
+        elif rows[0][2]==rows[1][1]=='X' and rows[1][1]==rows[2][0]=='X':
+            return 'X'
+        elif rows[0][2]==rows[1][1]=='O' and rows[1][1]==rows[2][0]=='O':
+            return 'O'
+        for i in range(3):
+            x_count=0
+            o_count=0
+            for j in range(3):
+                if rows[i][j]=='X':
+                    x_count=x_count+1
+                elif rows[i][j]=='O':
+                    o_count=o_count+1
+                else:
+                    pass
+            if x_count == 3:
+                return 'X'
+            elif o_count==3:
+                return 'O'
+            else:
+                pass
+        for i in range(3):
+            x_count=0
+            o_count=0
+            for j in range(3):
+                if rows[j][i]=='X':
+                    x_count=x_count+1
+                elif rows[j][i]=='O':
+                    o_count=o_count+1       
+                else:
+                    pass
+            if x_count == 3:
+                return 'X'
+            elif o_count==3:
+                return 'O'
+            else:
+                pass
+    else:
+        return 1
+def announce_winner(rows,pp1,pp2,chance_limit):
+    if check_winner(rows,chance_limit)=='X':
+        print(f'{pp1} congratulations ! , you won the game ')
+    elif check_winner(rows,chance_limit)=='O':
+        print(f'{pp2} congratulations ! , you won the game ')
+    else:
+        print(f'Guys, its a draw .')
+def game_on():
+    game_yn=input('Do you want to continue playing(Y/N) ')
+    while game_yn not in ['Y','N']:
+        print('invalid choice.')
+        game_yn=input('Enter Y/N')
+        continue
+    else:    
+        if game_yn=='Y':
+            return True
+        else:
+            return False
+def print_l(rows):
+    for i in [0,1,2]:
+            for j in range(3):
+                if j!=2:
+                    print(f'  {rows[i][j]}  |',end='')
+                else:
+                    print(f'  {rows[i][j]}  ')
+            if i!=2:        
+                print('----------------') 
+def display(rows,pos,st):
+    if pos==0:
+        print_l(rows)       
+    elif pos>=1 and pos<=3:
+        rows[2][pos-1]=st
+        print_l(rows)
+    elif pos>=4 and pos<=6:
+        rows[1][pos-4]=st
+        print_l(rows)
+    else:
+        rows[0][pos-7]=st
+        print_l(rows)
+def tic_tac_toe(p1,rows,pp1,pp2):
+    chance_limit=1
+    my_list=[i for i in range(1,10)]
+    while check_winner(rows,chance_limit)!=1 and check_winner(rows,chance_limit) not in ['X','O']:    
+        if p1=='Y':
+            print(f'{pp1} its your turn !')
+            pos=input('Enter an integer bet 1-10 : ')
+        else:
+            print(f'{pp2} its your turn !')
+            pos=input('Enter an integer bet 1-10 : ')
+        flag=0
+        while flag!=1:
+            if not pos.isdigit():
+                print('Error ! its a string ,')
+                pos=input('Enter an integer bet 1-10 : ')
+                continue
+            else:
+                pos=int(pos)
+                if pos not in my_list:
+                    print('Invalid choice')
+                    pos=input('Enter an integer bet 1-10 : ')
+                else:
+                    flag=1
+                    clear_output()
+        my_list.remove(pos)
+        ch1='X'
+        ch2='O'
+        if p1=='Y':
+            display(rows,int(pos),ch1)
+            p1='N'
+        else:
+            display(rows,int(pos),ch2)
+            p1='Y'    
+        chance_limit=chance_limit+1
+    announce_winner(rows,pp1,pp2,chance_limit)
+pp1=input('player one , your name ? \n')
+pp2=input('player two , your name ? \n')
+rows=[['','',''],['','',''],['','','']]
+p1='Y'
+display(rows,0,'')
+tic_tac_toe(p1,rows,pp1,pp2)
+while game_on():
+    rows=[['','',''],['','',''],['','','']]
+    display(rows,0,'')
+    tic_tac_toe(p1,rows,pp1,pp2) 
+else:
+    print('Thank you!')
